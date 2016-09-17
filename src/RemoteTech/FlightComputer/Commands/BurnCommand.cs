@@ -118,9 +118,12 @@ namespace RemoteTech.FlightComputer.Commands
             string KaCAddonLabel = String.Empty;
             double timetoexec = (this.TimeStamp + this.ExtraDelay) - 180;
 
+            RTLog.Notify("Burn Command was EnQueued");
+
             // only insert if we've no negativ time and the option is set
             if (timetoexec - RTUtil.GameTime > 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
             {
+                RTLog.Notify("BurnCommand: Attempting to create KAC Alarm");
                 KaCAddonLabel = "Burn " + computer.Vessel.vesselName + " for ";
 
                 if (this.Duration > 0)
@@ -130,7 +133,10 @@ namespace RemoteTech.FlightComputer.Commands
                 
                 if (RTCore.Instance != null && RTCore.Instance.kacAddon != null)
                 {
-                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Raw, KaCAddonLabel, timetoexec);
+                    RTLog.Notify("BurnCommand: Creating Alarm");
+                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Raw, KaCAddonLabel, timetoexec, computer.Vessel.id.ToString());
+                    if(this.KaCItemId != null)
+                        RTLog.Notify("BurnCommand: Alarm Created");
                 }
             }
         }

@@ -253,13 +253,19 @@ namespace RemoteTech.FlightComputer.Commands
             string KaCAddonLabel = String.Empty;
             double timetoexec = (this.TimeStamp + this.ExtraDelay) - 180;
 
+            RTLog.Notify("Maneuver Command was EnQueued");
+
             if (timetoexec - RTUtil.GameTime >= 0 && RTSettings.Instance.AutoInsertKaCAlerts == true)
             {
+                RTLog.Notify("ManeuverCommand: Attempting to create KAC Alarm");
                 KaCAddonLabel = computer.Vessel.vesselName + " Maneuver";
 
                 if (RTCore.Instance != null && RTCore.Instance.kacAddon != null)
                 {
-                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Maneuver, KaCAddonLabel, timetoexec);
+                    RTLog.Notify("ManeuverCommand: Creating Alarm");
+                    this.KaCItemId = RTCore.Instance.kacAddon.CreateAlarm(AddOns.KerbalAlarmClockAddon.AlarmTypeEnum.Maneuver, KaCAddonLabel, timetoexec, computer.Vessel.id.ToString());
+                    if (this.KaCItemId != null)
+                        RTLog.Notify("ManeuverCommand: Alarm Created");
                 }
             }
 
